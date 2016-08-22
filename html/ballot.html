@@ -15,26 +15,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- jsontree css -->
-    <link href="css/jsontree.css" rel="stylesheet">
+    <link href="../css/jsontree.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/portfolio-item.css" rel="stylesheet">
+    <link href="../css/portfolio-item.css" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel='shortcut icon' href='arlington-va.png' type='image/png'/ >
-
-    <!-- Google Map -->
-    <style>
-        #map {
-            width: 100%;
-            height: 400px;
-        }
-
-        .address-error-text{
-            background-color: rgb(161, 57, 59);
-            color: white;
-        }
-    </style>
+    <link rel='shortcut icon' href='../arlington-va.png' type='image/png'/ >
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -64,13 +51,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="./index.html">Polling Place</a>
+                        <a href="../index.html">Polling Place</a>
                     </li>
                     <li>
                         <a href="./html/ballot.html">Ballot</a>
                     </li>
                     <li>
-                        <a href="./html/current-reps">Current Reps</a>
+                        <a href="./current-reps.html">Current Reps</a>
                     </li>
                 </ul>
             </div>
@@ -85,8 +72,8 @@
         <!-- Portfolio Item Heading -->
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Polling Place
-                    <small>Find Your Polling Place</small>
+                <h1 class="page-header">Current Representative
+                    <small>Who are your current representatives?</small>
                 </h1>
             </div>
         </div>
@@ -101,12 +88,6 @@
 
                       <!-- Form Name -->
                       <legend>Address Details</legend>
-
-                      <div class="form-group hidden address-error">
-                        <div class="col-sm-12 address-error-text form-control">
-                          Please fill out all of the fields for address.
-                        </div>
-                      </div>
 
                       <!-- Text input-->
                       <div class="form-group">
@@ -152,7 +133,7 @@
 
             <div class="col-md-6">
                 <h3>Result Object</h3>
-                <div id='map'></div>
+                <div id='jsonResults'></div>
             </div>
 
         </div>
@@ -215,85 +196,24 @@
 
     <script src="js/jsontree.js"></script>
 
-    <!-- Google Map -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuJQWXjDrvkXPg--FX1tbkeFzOPqmplHs&callback=initMap"></script>
-
     <script>
-        var googleMap;
         $(document).ready(function(){
             //listener on Find My Polling Place button
             $('#findButton').click(function(){
                 var address = '';
-                address = validateAddress()
+                //there should be validation for US address
+                address = $('#address1').val() + $('#city').val() + $('#state').val() + $('#zipcode').val();
 
+                console.log('address', address);
                 //API call to Civic Google API
                 $.get( `https://www.googleapis.com/civicinfo/v2/voterinfo?key=AIzaSyBN9NQlhbf9wQ6PeIWRWFyfgppFR_pFOfA&address=${address}`, function( data ) {
-                    
-                    var pollAddress = data.pollingLocations[0].address.line1 + ', ' +  data.pollingLocations[0].address.city + ', ' + data.pollingLocations[0].address.state + ', ' +  data.pollingLocations[0].address.zip; 
-                    console.log('pollAddress', pollAddress);
-                    var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode({'address': pollAddress }, function(results, status){
-                            if(status === 'OK'){
-                                console.log('results', results);
-                                googleMap.setCenter(results[0].geometry.location);
-                                googleMap.setZoom(15);
-                                var marker = new google.maps.Marker({
-                                  map: googleMap,
-                                  position: results[0].geometry.location
-                                });
-                            }else{
-                                alert('Geocode was not successful for the following reason: ' + status);
-                            }
-                    });
+                    console.log('data', data);
                     //render the JSON in #jsonResults div
                     $('#jsonResults').jsontree(JSON.stringify(data));
-
                 })
             });
         });
-
-        function validateAddress(){
-            var hasError = false;
-            if(!$('#address1').val()){
-                $('#address1').parent().addClass('has-error');
-                hasError = true;
-            }
-
-            if(!$('#city').val()){
-                $('#city').parent().addClass('has-error');
-                hasError = true;
-            }
-
-            if(!$('#state').val()){
-                $('#state').parent().addClass('has-error');
-                hasError = true;
-            }
-
-            if(!$('#zipcode').val()){
-                $('#zipcode').parent().addClass('has-error');
-            }
-
-            if(hasError){
-                $(".address-error").removeClass('hidden');
-                throw new Error('address not properly defined');
-            }else{
-                $(".address-error").addClass('hidden');
-                var address = $('#address1').val() + $('#city').val() + $('#state').val() + $('#zipcode').val();
-                return address;
-            }
-        }
-
-        function initMap() {
-            var mapDiv = document.getElementById('map');
-            googleMap = new google.maps.Map(mapDiv, {
-                center: {lat: 44.540, lng: -78.546},
-                zoom: 8
-                });
-            
-
-        }
     </script>
-    
 </body>
 
 </html>

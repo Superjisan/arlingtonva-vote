@@ -1,28 +1,28 @@
 {
-  "name": "arlington-vote",
-  "version": "0.0.1",
-  "description": "A website for Arlington Voters in VA",
-  "main": "app.js",
-  "scripts": {
-    "test": "npm test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Superjisan/arlingtonva-vote.git"
-  },
-  "keywords": [
-    "vote",
-    "arlington",
-    "node",
-    "npm"
-  ],
-  "author": "Jisan Zaman",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Superjisan/arlingtonva-vote/issues"
-  },
-  "homepage": "https://github.com/Superjisan/arlingtonva-vote#readme",
-  "dependencies": {
-    "http-server": "^0.9.0"
-  }
+	"name": "arlington-vote",
+	"version": "0.0.1",
+	"description": "A website for the DC, Maryland, Virginia Metro area voters",
+	"main": "app.js",
+	"scripts": {
+		"test": "npm test"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Superjisan/arlingtonva-vote.git"
+	},
+	"keywords": [
+		"vote",
+		"arlington",
+		"node",
+		"npm"
+	],
+	"author": "Jisan Zaman",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Superjisan/arlingtonva-vote/issues"
+	},
+	"homepage": "https://github.com/Superjisan/arlingtonva-vote#readme",
+	"dependencies": {
+		"http-server": "^0.9.0"
+	}
 }
