@@ -230,11 +230,9 @@
                 $.get( `https://www.googleapis.com/civicinfo/v2/voterinfo?key=AIzaSyBN9NQlhbf9wQ6PeIWRWFyfgppFR_pFOfA&address=${address}`, function( data ) {
                     
                     var pollAddress = data.pollingLocations[0].address.line1 + ', ' +  data.pollingLocations[0].address.city + ', ' + data.pollingLocations[0].address.state + ', ' +  data.pollingLocations[0].address.zip; 
-                    console.log('pollAddress', pollAddress);
                     var geocoder = new google.maps.Geocoder();
                     geocoder.geocode({'address': pollAddress }, function(results, status){
                             if(status === 'OK'){
-                                console.log('results', results);
                                 googleMap.setCenter(results[0].geometry.location);
                                 googleMap.setZoom(15);
                                 var marker = new google.maps.Marker({
@@ -242,7 +240,7 @@
                                   position: results[0].geometry.location
                                 });
                             }else{
-                                alert('Geocode was not successful for the following reason: ' + status);
+                                throw new Error('Geocode was not successful for the following reason: ' + status);
                             }
                     });
                     //render the JSON in #jsonResults div
