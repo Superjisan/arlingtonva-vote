@@ -29,6 +29,11 @@
             width: 100%;
             height: 400px;
         }
+
+        .address-error-text{
+            background-color: rgb(161, 57, 59);
+            color: white;
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -59,7 +64,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="./">Polling Place</a>
+                        <a href="./index.html">Polling Place</a>
                     </li>
                     <li>
                         <a href="./html/ballot.html">Ballot</a>
@@ -96,6 +101,12 @@
 
                       <!-- Form Name -->
                       <legend>Address Details</legend>
+
+                      <div class="form-group hidden address-error">
+                        <div class="col-sm-12 address-error-text form-control">
+                          Please fill out all of the fields for address.
+                        </div>
+                      </div>
 
                       <!-- Text input-->
                       <div class="form-group">
@@ -208,29 +219,78 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuJQWXjDrvkXPg--FX1tbkeFzOPqmplHs&callback=initMap"></script>
 
     <script>
+        var googleMap;
         $(document).ready(function(){
             //listener on Find My Polling Place button
             $('#findButton').click(function(){
                 var address = '';
-                //there should be validation for US address
-                address = $('#address1').val() + $('#city').val() + $('#state').val() + $('#zipcode').val();
+                address = validateAddress()
 
-                console.log('address', address);
                 //API call to Civic Google API
                 $.get( `https://www.googleapis.com/civicinfo/v2/voterinfo?key=AIzaSyBN9NQlhbf9wQ6PeIWRWFyfgppFR_pFOfA&address=${address}`, function( data ) {
-                    console.log('data', data);
+                    
+                    var pollAddress = data.pollingLocations[0].address.line1 + ', ' +  data.pollingLocations[0].address.city + ', ' + data.pollingLocations[0].address.state + ', ' +  data.pollingLocations[0].address.zip; 
+                    console.log('pollAddress', pollAddress);
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({'address': pollAddress }, function(results, status){
+                            if(status === 'OK'){
+                                console.log('results', results);
+                                googleMap.setCenter(results[0].geometry.location);
+                                googleMap.setZoom(15);
+                                var marker = new google.maps.Marker({
+                                  map: googleMap,
+                                  position: results[0].geometry.location
+                                });
+                            }else{
+                                alert('Geocode was not successful for the following reason: ' + status);
+                            }
+                    });
                     //render the JSON in #jsonResults div
                     $('#jsonResults').jsontree(JSON.stringify(data));
+
                 })
             });
         });
 
+        function validateAddress(){
+            var hasError = false;
+            if(!$('#address1').val()){
+                $('#address1').parent().addClass('has-error');
+                hasError = true;
+            }
+
+            if(!$('#city').val()){
+                $('#city').parent().addClass('has-error');
+                hasError = true;
+            }
+
+            if(!$('#state').val()){
+                $('#state').parent().addClass('has-error');
+                hasError = true;
+            }
+
+            if(!$('#zipcode').val()){
+                $('#zipcode').parent().addClass('has-error');
+            }
+
+            if(hasError){
+                $(".address-error").removeClass('hidden');
+                throw new Error('address not properly defined');
+            }else{
+                $(".address-error").addClass('hidden');
+                var address = $('#address1').val() + $('#city').val() + $('#state').val() + $('#zipcode').val();
+                return address;
+            }
+        }
+
         function initMap() {
             var mapDiv = document.getElementById('map');
-            var map = new google.maps.Map(mapDiv, {
+            googleMap = new google.maps.Map(mapDiv, {
                 center: {lat: 44.540, lng: -78.546},
                 zoom: 8
                 });
+            
+
         }
     </script>
     
