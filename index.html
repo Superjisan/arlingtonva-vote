@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Vote DMV</title>
+    <title>Arlington Vote</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -58,7 +58,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Vote DMV</a>
+                <a class="navbar-brand" href="#">Arlington Vote</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -228,8 +228,8 @@
 
                 //API call to Civic Google API
                 $.get( `https://www.googleapis.com/civicinfo/v2/voterinfo?key=AIzaSyBN9NQlhbf9wQ6PeIWRWFyfgppFR_pFOfA&address=${address}`, function( data ) {
-                    
-                    var pollAddress = data.pollingLocations[0].address.line1 + ', ' +  data.pollingLocations[0].address.city + ', ' + data.pollingLocations[0].address.state + ', ' +  data.pollingLocations[0].address.zip; 
+
+                    var pollAddress = data.pollingLocations[0].address.line1 + ', ' +  data.pollingLocations[0].address.city + ', ' + data.pollingLocations[0].address.state + ', ' +  data.pollingLocations[0].address.zip;
                     console.log('pollAddress', pollAddress);
                     var geocoder = new google.maps.Geocoder();
                     geocoder.geocode({'address': pollAddress }, function(results, status){
@@ -289,11 +289,11 @@
                 center: {lat: 44.540, lng: -78.546},
                 zoom: 8
                 });
-            
+
 
         }
     </script>
-    
+
 </body>
 
 </html>
