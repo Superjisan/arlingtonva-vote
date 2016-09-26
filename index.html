@@ -110,9 +110,9 @@
 
                       <!-- Text input-->
                       <div class="form-group">
-                        <label class="col-sm-2 control-label" for="address1">Address Line 1</label>
+                        <label class="col-sm-2 control-label" for="address1">Address Line</label>
                         <div class="col-sm-10">
-                          <input id="address1" type="text" placeholder="Address Line 1" class="form-control">
+                          <input id="address1" type="text" placeholder="Address Line 1" class="form-control" value="768 N Wakefield Street">
                         </div>
                       </div>
 
@@ -131,9 +131,9 @@
                           <input id="state" type="text" placeholder="State" class="form-control" value="VA">
                         </div>
 
-                        <label class="col-sm-2 control-label" for="zipcode">Zipcode</label>
+                        <label class="col-sm-2 control-label" for="zipcode" >Zipcode</label>
                         <div class="col-sm-4">
-                          <input id="zipcode" type="text" placeholder="Post Code" class="form-control">
+                          <input id="zipcode" type="text" placeholder="Post Code" class="form-control" value="22203">
                         </div>
                       </div>
 
@@ -151,7 +151,17 @@
             </div>
 
             <div class="col-md-6">
-                <h3>Result Object</h3>
+                <div class="polling-location hidden">
+                    <h3>Polling Location</h3>
+                    <p>Location: <span class="locationName">CENTRAL LIBRARY</span></p>
+                    <p>Address:
+                        <span class="line1">1015 N Quincy St</span>
+                        <span class="line2"></span>
+                        <span class="city">Arlington</span>
+                        <span class="state">VA</span>
+                        <span class="zipcode">22201</span>
+                    </p>
+                </div>
                 <div id='map'></div>
             </div>
 
@@ -208,49 +218,24 @@
     <!-- /.container -->
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous""></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous""></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-    <script src="js/jsontree.js"></script>
+    <script src="./js/googlemapsFns.js"></script>
 
     <!-- Google Map -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuJQWXjDrvkXPg--FX1tbkeFzOPqmplHs&callback=initMap"></script>
 
+
     <script>
-        var googleMap;
-        $(document).ready(function(){
+
+        $(document).ready(() => {
             //listener on Find My Polling Place button
             $('#findButton').click(function(){
-                var address = '';
-                address = validateAddress()
-
-                //API call to Civic Google API
-                $.get( `https://www.googleapis.com/civicinfo/v2/voterinfo?key=AIzaSyBN9NQlhbf9wQ6PeIWRWFyfgppFR_pFOfA&address=${address}`, function( data ) {
-
-                    var pollAddress = data.pollingLocations[0].address.line1 + ', ' +  data.pollingLocations[0].address.city + ', ' + data.pollingLocations[0].address.state + ', ' +  data.pollingLocations[0].address.zip;
-                    console.log('pollAddress', pollAddress);
-                    var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode({'address': pollAddress }, function(results, status){
-                            if(status === 'OK'){
-                                console.log('results', results);
-                                googleMap.setCenter(results[0].geometry.location);
-                                googleMap.setZoom(15);
-                                var marker = new google.maps.Marker({
-                                  map: googleMap,
-                                  position: results[0].geometry.location
-                                });
-                            }else{
-                                alert('Geocode was not successful for the following reason: ' + status);
-                            }
-                    });
-                    //render the JSON in #jsonResults div
-                    $('#jsonResults').jsontree(JSON.stringify(data));
-
-                })
+                apiCallToCivicInfo();
             });
-        });
+        })
 
         function validateAddress(){
             var hasError = false;
@@ -283,15 +268,25 @@
             }
         }
 
-        function initMap() {
-            var mapDiv = document.getElementById('map');
-            googleMap = new google.maps.Map(mapDiv, {
-                center: {lat: 44.540, lng: -78.546},
-                zoom: 8
-                });
-
-
+        function showAddress(location) {
+            $('.polling-location').removeClass('hidden');
+            $('.polling-location .locationName').text(location.locationName);
+            $('.polling-location .line1').text(location.line1);
+            $('.polling-location .line2').text(location.line2);
+            $('.polling location .city').text(location.city)
         }
+
+        function apiCallToCivicInfo() {
+            validateAddress();
+            //API call to Civic Google API
+            $.get( `https://www.googleapis.com/civicinfo/v2/voterinfo?key=AIzaSyBN9NQlhbf9wQ6PeIWRWFyfgppFR_pFOfA&address=${address}`, function( data ) {
+                var pollingLocation = data.pollingLocations[0].address;
+                var pollAddress = pollingLocation.line1 + ', ' +  pollingLocation.city + ', ' + pollingLocation.state + ', ' +  pollingLocation.zip;
+                renderMap(pollAddress);
+                showAddress(pollingLocation, googleMap);
+            });
+        }
+
     </script>
 
 </body>
