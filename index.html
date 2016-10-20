@@ -66,12 +66,12 @@
                     <li>
                         <a href="./index.html">Polling Place</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="./html/ballot.html">Ballot</a>
                     </li>
                     <li>
-                        <a href="./html/current-reps">Current Reps</a>
-                    </li>
+                        <a href="./html/current-reps.html">Current Reps</a>
+                    </li> -->
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -110,9 +110,9 @@
 
                       <!-- Text input-->
                       <div class="form-group">
-                        <label class="col-sm-2 control-label" for="address1">Address Line</label>
+                        <label class="col-sm-2 control-label" for="address1">Address</label>
                         <div class="col-sm-10">
-                          <input id="address1" type="text" placeholder="Address Line 1" class="form-control" value="768 N Wakefield Street">
+                          <input id="address1" type="text" placeholder="Address Line 1" class="form-control">
                         </div>
                       </div>
 
@@ -168,47 +168,15 @@
         </div>
         <!-- /.row -->
 
-        <!-- Related Projects Row -->
-        <div class="row">
 
-            <div class="col-lg-12">
-                <h3 class="page-header">Related Projects</h3>
-            </div>
 
-            <div class="col-sm-3 col-xs-6">
-                <a href="#">
-                    <img class="img-responsive portfolio-item" src="http://placehold.it/500x300" alt="">
-                </a>
-            </div>
 
-            <div class="col-sm-3 col-xs-6">
-                <a href="#">
-                    <img class="img-responsive portfolio-item" src="http://placehold.it/500x300" alt="">
-                </a>
-            </div>
-
-            <div class="col-sm-3 col-xs-6">
-                <a href="#">
-                    <img class="img-responsive portfolio-item" src="http://placehold.it/500x300" alt="">
-                </a>
-            </div>
-
-            <div class="col-sm-3 col-xs-6">
-                <a href="#">
-                    <img class="img-responsive portfolio-item" src="http://placehold.it/500x300" alt="">
-                </a>
-            </div>
-
-        </div>
-        <!-- /.row -->
-
-        <hr>
 
         <!-- Footer -->
         <footer>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Copyright &copy; Your Website 2014</p>
+                    <p>Copyright &copy; Jisan Zaman 2016</p>
                 </div>
             </div>
             <!-- /.row -->
@@ -277,7 +245,7 @@
         }
 
         function apiCallToCivicInfo() {
-            validateAddress();
+            const address = validateAddress();
             //API call to Civic Google API
             $.get( `https://www.googleapis.com/civicinfo/v2/voterinfo?key=AIzaSyBN9NQlhbf9wQ6PeIWRWFyfgppFR_pFOfA&address=${address}`, function( data ) {
                 var pollingLocation = data.pollingLocations[0].address;
